@@ -1,0 +1,32 @@
+.carousel {
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+.carousel-slider {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel-padding {
+    min-width: 25%;
+}
+.slide {
+    width: 50%;
+    flex-shrink: 0;
+}
+
+/* Unrelated */
+
+body {
+    color: white;
+    background-color: black;
+}
+
+.slide {
+    height: 150px;
+    background-color: red;
+    border: blue solid 1px;
+    text-align: center;
+}
