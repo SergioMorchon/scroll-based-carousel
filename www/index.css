@@ -9,12 +9,22 @@
     flex-direction: row;
 }
 
-.carousel-padding {
-    min-width: 25%;
+.slide {
+    flex-shrink: 0;
+}
+
+.slide:first-child,
+.slide:last-child {
+    width: 25%;
+    background-color: transparent;
+    border: none;
 }
 .slide {
     width: 50%;
-    flex-shrink: 0;
+    height: 150px;
+    background-color: red;
+    border: blue solid 1px;
+    text-align: center;
 }
 
 /* Unrelated */
@@ -25,8 +35,4 @@ body {
 }
 
 .slide {
-    height: 150px;
-    background-color: red;
-    border: blue solid 1px;
-    text-align: center;
 }
