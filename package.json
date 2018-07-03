@@ -1,13 +1,19 @@
 {
-  "name": "carousel",
+  "name": "scrollousel",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "This is a plain simple carousel based on a plain simple scroll.",
+  "main": "www/scrollousel.js",
+  "files": [
+    "www/scrollousel.js"
+  ],
   "scripts": {
     "start": "node app"
   },
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "Sergio Morchón Poveda",
+    "email": "sergio.morchon@outlook.com"
+  },
+  "license": "MIT",
   "devDependencies": {
     "express": "^4.16.3"
   }
