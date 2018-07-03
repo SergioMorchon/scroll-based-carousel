@@ -1,15 +1,13 @@
-import Carousel from './carousel.js';
+import Scrollousel from './scrollousel.js';
 
 {
-    const carousel = new Carousel(document.getElementById('carousel'), {
-        containerClassName: 'carousel',
-        sliderClassName: 'carousel-slider',
-        slideClassName: 'slide',
+    const carousel = new Scrollousel(document.querySelector('.carousel'), {
+        scrollableSelector: '.carousel',
+        sliderSelector: '.slider',
         onIndexChange: index => {
-            writeOutput(index - 1);
+            writeOutput(index);
         },
     });
-    carousel.build();
     document.getElementById('slide-index').addEventListener('change', e => {
         carousel.goToIndex(Number(e.srcElement.value));
     });

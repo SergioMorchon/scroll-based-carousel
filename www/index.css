@@ -3,21 +3,19 @@
     overflow-x: scroll;
 }
 
-.carousel-slider {
+.slider {
     position: relative;
     display: flex;
     flex-direction: row;
 }
 
-.slide {
+.slide,
+.padding-slide {
     flex-shrink: 0;
 }
 
-.slide:first-child,
-.slide:last-child {
+.padding-slide {
     width: 25%;
-    background-color: transparent;
-    border: none;
 }
 .slide {
     width: 50%;
@@ -32,7 +30,4 @@
 body {
     color: white;
     background-color: black;
-}
-
-.slide {
 }
