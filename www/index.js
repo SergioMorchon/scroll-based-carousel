@@ -18,7 +18,7 @@ const carousel = new Scrollousel(document.querySelector('.carousel'), {
 });
 
 document.getElementById('slide-index').addEventListener('change', e => {
-    carousel.index = Number(e.srcElement.value);
+    carousel.index = Number(document.getElementById('slide-index').value);
 });
 
 updateSlideIndex(carousel.index);

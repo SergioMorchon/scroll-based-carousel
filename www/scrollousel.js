@@ -3,19 +3,19 @@
  * @param {number[]} values
  * @returns {number}
  */
-const getClotestValueIndex = (targetValue, values) => {
-    let clotestIndex = NaN;
-    let accumulatedDelta = Infinity;
-    for (let i = 0; i < values.length; i++) {
-        const delta = Math.abs(values[i] - targetValue);
-        if (delta < accumulatedDelta) {
-            clotestIndex = i;
-            accumulatedDelta = delta;
-        }
-    }
-
-    return clotestIndex;
-};
+const getClosestIndexForValue = (targetValue, values) =>
+    values.reduce(
+        ({closestIndex, closestDelta}, value, index) => {
+            const delta = Math.abs(value - targetValue);
+            return delta < closestDelta
+                ? {
+                      closestIndex: index,
+                      closestDelta: delta,
+                  }
+                : {closestIndex, closestDelta};
+        },
+        {closestIndex: NaN, closestDelta: Infinity}
+    ).closestIndex;
 
 /**
  * @param {HTMLElement} element
@@ -42,39 +42,59 @@ const getSlidesCenters = slides => slides.map(slide => slide.offsetLeft + getWid
  */
 
 /**
+ * @typedef CancellableTask
+ * @property {Promise<void>} promise
+ * @property {function(): void} cancel
+ */
+
+/**
  * @param {HTMLElement} carousel
  * @param {HTMLElement} slide
  * @param {Animation} animation
+ * @returns {CancellableTask}
  */
 const goToSlide = (carousel, slide, animation) => {
-    const startScrollLeft = carousel.scrollLeft;
-    const targetScrollLeft = Math.max(0, slide.offsetLeft - getWidth(slide) / 2);
-    const horizontalRange = targetScrollLeft - startScrollLeft;
-
-    const goToToFinal = () => {
-        carousel.scrollLeft = targetScrollLeft;
+    let stop = false;
+    const cancel = () => {
+        stop = true;
     };
+    const promise = new Promise(resolve => {
+        const startScrollLeft = carousel.scrollLeft;
+        const targetScrollLeft = Math.max(0, slide.offsetLeft - getWidth(slide) / 2);
+        const horizontalRange = targetScrollLeft - startScrollLeft;
 
-    if (!animation || animation.duration <= 0) {
-        goToToFinal();
-        return;
-    }
+        const complete = () => {
+            carousel.scrollLeft = targetScrollLeft;
+            resolve();
+        };
 
-    const startTimestamp = Date.now();
-    const loop = () => {
-        const timeProgress = (Date.now() - startTimestamp) / animation.duration;
-        carousel.scrollLeft =
-            startScrollLeft +
-            horizontalRange *
-                (animation.timingFunction ? animation.timingFunction(timeProgress) : timeProgress);
-        if (timeProgress < 1) {
-            window.requestAnimationFrame(loop);
-        } else {
-            goToToFinal();
+        if (!animation || animation.duration <= 0) {
+            complete();
+            return;
         }
-    };
 
-    loop();
+        const startTimestamp = Date.now();
+        const loop = () => {
+            if (stop) {
+                return;
+            }
+
+            const timeProgress = (Date.now() - startTimestamp) / animation.duration;
+            carousel.scrollLeft =
+                startScrollLeft +
+                horizontalRange *
+                    (animation.timingFunction ? animation.timingFunction(timeProgress) : timeProgress);
+            if (timeProgress < 1) {
+                window.requestAnimationFrame(loop);
+            } else {
+                complete();
+            }
+        };
+
+        loop();
+    });
+
+    return {promise, cancel};
 };
 
 /**
@@ -146,14 +166,22 @@ class Scrollousel {
         const {scrollableElement, slides, slider} = this;
         const centerPoint = scrollableElement.scrollLeft + getWidth(slider) / 2;
         const slidesCenters = getSlidesCenters(slides);
-        return getClotestValueIndex(centerPoint, slidesCenters);
+        return getClosestIndexForValue(centerPoint, slidesCenters);
     }
 
     /**
      * @param {number} value
      */
     set index(value) {
-        goToSlide(this.scrollableElement, this.slides[value], this.options.moveAnimation);
+        if (this.currentGoToSlideTask) {
+            this.currentGoToSlideTask.cancel();
+        }
+
+        this.currentGoToSlideTask = goToSlide(
+            this.scrollableElement,
+            this.slides[value],
+            this.options.moveAnimation
+        );
     }
 }
 
