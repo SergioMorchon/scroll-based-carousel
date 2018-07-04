@@ -30,23 +30,47 @@ const getWidth = element => parseInt(window.getComputedStyle(element).width, 10)
 const getSlidesCenters = slides => slides.map(slide => slide.offsetLeft + getWidth(slide) / 2);
 
 /**
+ * @callback TimingFunction
+ * @param {number} timeProgress Current time progress for the animation, between 0 and 1.
+ * @returns {number} The movement progress, between 0 and 1.
+ */
+
+/**
+ * @typedef Animation
+ * @property {number} duration In milliseconds.
+ * @property {TimingFunction} [timingFunction]
+ */
+
+/**
  * @param {HTMLElement} carousel
  * @param {HTMLElement} slide
- * @param {number} time
+ * @param {Animation} animation
  */
-const goToSlideAnimated = (carousel, slide, time) => {
+const goToSlide = (carousel, slide, animation) => {
     const startScrollLeft = carousel.scrollLeft;
     const targetScrollLeft = Math.max(0, slide.offsetLeft - getWidth(slide) / 2);
     const horizontalRange = targetScrollLeft - startScrollLeft;
-    const startTimestamp = Date.now();
 
+    const goToToFinal = () => {
+        carousel.scrollLeft = targetScrollLeft;
+    };
+
+    if (!animation || animation.duration <= 0) {
+        goToToFinal();
+        return;
+    }
+
+    const startTimestamp = Date.now();
     const loop = () => {
-        const progress = (Date.now() - startTimestamp) / time;
-        carousel.scrollLeft = startScrollLeft + horizontalRange * progress;
-        if (progress < 1) {
+        const timeProgress = (Date.now() - startTimestamp) / animation.duration;
+        carousel.scrollLeft =
+            startScrollLeft +
+            horizontalRange *
+                (animation.timingFunction ? animation.timingFunction(timeProgress) : timeProgress);
+        if (timeProgress < 1) {
             window.requestAnimationFrame(loop);
         } else {
-            carousel.scrollLeft = targetScrollLeft;
+            goToToFinal();
         }
     };
 
@@ -63,24 +87,23 @@ const goToSlideAnimated = (carousel, slide, time) => {
  * @property {IndexChange} [onIndexChange] Listen to index changes.
  * @property {string} [scrollableSelector] Query selector to the scrollable element. It is the one with available overflow to listen for its scroll events. It will be the container by default.
  * @property {string} sliderSelector Query selector to find the slider element. It is the parent of the slides.
+ * @property {Animation} [moveAnimation]
  */
 
 class Scrollousel {
     /**
      * @param {HTMLElement} container The root element of the carousel structure.
-     * @param {Options} [options]
+     * @param {Options} options
      */
-    constructor(container, options = {}) {
+    constructor(container, options) {
         this.options = options;
         this.container = container;
-        this.handleScroll = e => {
+        this.handleScroll = () => {
             const {onIndexChange} = this.options;
             if (onIndexChange) {
                 window.requestAnimationFrame(() => {
-                    const {latestIndex, slides, slider} = this;
-                    const centerPoint = e.target.scrollLeft + getWidth(slider) / 2;
-                    const slidesCenters = getSlidesCenters(slides);
-                    const index = getClotestValueIndex(centerPoint, slidesCenters);
+                    const {latestIndex} = this;
+                    const index = this.index;
                     if (latestIndex !== index) {
                         this.latestIndex = index;
                         onIndexChange(index);
@@ -119,11 +142,18 @@ class Scrollousel {
         this.build();
     }
 
+    get index() {
+        const {scrollableElement, slides, slider} = this;
+        const centerPoint = scrollableElement.scrollLeft + getWidth(slider) / 2;
+        const slidesCenters = getSlidesCenters(slides);
+        return getClotestValueIndex(centerPoint, slidesCenters);
+    }
+
     /**
-     * @param {number} index
+     * @param {number} value
      */
-    goToIndex(index) {
-        goToSlideAnimated(this.scrollableElement, this.slides[index], 200);
+    set index(value) {
+        goToSlide(this.scrollableElement, this.slides[value], this.options.moveAnimation);
     }
 }
 
