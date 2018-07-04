@@ -99,25 +99,23 @@ const goToSlide = (carousel, slide, animation) => {
 
 /**
  * @callback IndexChange
- * @param {number} index The current slide index.
+ * @param {number} index
  */
 
 /**
  * @typedef {Object} Options
  * @property {IndexChange} [onIndexChange] Listen to index changes.
- * @property {string} [scrollableSelector] Query selector to the scrollable element. It is the one with available overflow to listen for its scroll events. It will be the container by default.
- * @property {string} sliderSelector Query selector to find the slider element. It is the parent of the slides.
- * @property {Animation} [moveAnimation]
+ * @property {HTMLElement} scrollableElement Query selector to the scrollable element. It is the one with available overflow to listen for its scroll events. It will be the container by default.
+ * @property {HTMLElement} sliderElement Query selector to find the slider element. It is the parent of the slides.
+ * @property {Animation} [moveAnimation] Animation used to scroll the content.
  */
 
 class Scrollousel {
     /**
-     * @param {HTMLElement} container The root element of the carousel structure.
      * @param {Options} options
      */
-    constructor(container, options) {
+    constructor(options) {
         this.options = options;
-        this.container = container;
         this.handleScroll = () => {
             const {onIndexChange} = this.options;
             if (onIndexChange) {
@@ -135,26 +133,22 @@ class Scrollousel {
     }
 
     build() {
-        const {sliderSelector, scrollableSelector} = this.options;
-        this.slider = this.container.querySelector(sliderSelector);
-        this.scrollableElement =
-            (scrollableSelector && this.container.querySelector(scrollableSelector)) || this.container;
-        this.slides = Array.from(this.slider.childNodes).filter(
+        const {sliderElement, scrollableElement} = this.options;
+        this.slideElements = Array.from(sliderElement.childNodes).filter(
             ({nodeType, ELEMENT_NODE}) => nodeType === ELEMENT_NODE
         );
-        if (this.scrollableElement) {
-            this.scrollableElement.addEventListener('scroll', this.handleScroll);
+        if (scrollableElement) {
+            scrollableElement.addEventListener('scroll', this.handleScroll);
         }
     }
 
     destroy() {
-        if (this.scrollableElement) {
-            this.scrollableElement.removeEventListener('scroll', this.handleScroll);
+        const {scrollableElement} = this.options;
+        if (scrollableElement) {
+            scrollableElement.removeEventListener('scroll', this.handleScroll);
         }
 
-        this.slider = null;
-        this.scrollableElement = null;
-        this.slides = null;
+        this.options = null;
     }
 
     update() {
@@ -163,9 +157,9 @@ class Scrollousel {
     }
 
     get index() {
-        const {scrollableElement, slides, slider} = this;
-        const centerPoint = scrollableElement.scrollLeft + getWidth(slider) / 2;
-        const slidesCenters = getSlidesCenters(slides);
+        const {scrollableElement, sliderElement} = this.options;
+        const centerPoint = scrollableElement.scrollLeft + getWidth(sliderElement) / 2;
+        const slidesCenters = getSlidesCenters(this.slideElements);
         return getClosestIndexForValue(centerPoint, slidesCenters);
     }
 
@@ -178,8 +172,8 @@ class Scrollousel {
         }
 
         this.currentGoToSlideTask = goToSlide(
-            this.scrollableElement,
-            this.slides[value],
+            this.options.scrollableElement,
+            this.slideElements[value],
             this.options.moveAnimation
         );
     }

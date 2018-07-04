@@ -7,9 +7,9 @@ const updateSlideIndex = index => {
     document.getElementById('slide-index').value = index;
 };
 
-const carousel = new Scrollousel(document.querySelector('.carousel'), {
-    scrollableSelector: '.carousel',
-    sliderSelector: '.slider',
+const carousel = new Scrollousel({
+    scrollableElement: document.querySelector('.carousel'),
+    sliderElement: document.querySelector('.slider'),
     onIndexChange: updateSlideIndex,
     moveAnimation: {
         duration: 777,
