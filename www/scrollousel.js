@@ -27,7 +27,7 @@ const getWidth = element => parseInt(window.getComputedStyle(element).width, 10)
  * @param {HTMLElement[]} slides
  * @returns {number[]}
  */
-const getSlidesCenters = slides => slides.map(slide => slide.offsetLeft + getWidth(slide) / 2);
+const getHorizontalCenters = slides => slides.map(slide => slide.offsetLeft + getWidth(slide) / 2);
 
 /**
  * @callback TimingFunction
@@ -129,17 +129,12 @@ class Scrollousel {
                 });
             }
         };
-        this.build();
-    }
 
-    build() {
         const {sliderElement, scrollableElement} = this.options;
         this.slideElements = Array.from(sliderElement.childNodes).filter(
             ({nodeType, ELEMENT_NODE}) => nodeType === ELEMENT_NODE
         );
-        if (scrollableElement) {
-            scrollableElement.addEventListener('scroll', this.handleScroll);
-        }
+        scrollableElement.addEventListener('scroll', this.handleScroll);
     }
 
     destroy() {
@@ -151,15 +146,10 @@ class Scrollousel {
         this.options = null;
     }
 
-    update() {
-        this.destroy();
-        this.build();
-    }
-
     get index() {
         const {scrollableElement, sliderElement} = this.options;
         const centerPoint = scrollableElement.scrollLeft + getWidth(sliderElement) / 2;
-        const slidesCenters = getSlidesCenters(this.slideElements);
+        const slidesCenters = getHorizontalCenters(this.slideElements);
         return getClosestIndexForValue(centerPoint, slidesCenters);
     }
 
