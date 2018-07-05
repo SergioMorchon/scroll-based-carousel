@@ -27,7 +27,7 @@ const getWidth = element => parseInt(window.getComputedStyle(element).width, 10)
  * @param {HTMLElement[]} slides
  * @returns {number[]}
  */
-const getHorizontalCenters = slides => slides.map(slide => slide.offsetLeft + getWidth(slide) / 2);
+const getSlidesCenters = slides => slides.map(slide => slide.offsetLeft + getWidth(slide) / 2);
 
 /**
  * @callback TimingFunction
@@ -76,6 +76,7 @@ const goToSlide = (carousel, slide, animation) => {
         const startTimestamp = Date.now();
         const loop = () => {
             if (stop) {
+                resolve();
                 return;
             }
 
@@ -149,7 +150,7 @@ class Scrollousel {
     get index() {
         const {scrollableElement, sliderElement} = this.options;
         const centerPoint = scrollableElement.scrollLeft + getWidth(sliderElement) / 2;
-        const slidesCenters = getHorizontalCenters(this.slideElements);
+        const slidesCenters = getSlidesCenters(this.slideElements);
         return getClosestIndexForValue(centerPoint, slidesCenters);
     }
 
