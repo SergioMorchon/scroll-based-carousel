@@ -1,13 +1,17 @@
 {
-  "name": "scrollousel",
+  "name": "scroll-based-carousel",
   "version": "1.0.0",
   "description": "This is a plain simple carousel based on a plain simple scroll.",
-  "main": "www/scrollousel.js",
+  "main": "src/index.js",
   "files": [
-    "www/scrollousel.js"
+    "src/**/*.js"
   ],
   "scripts": {
-    "start": "node app"
+    "start-demo": "node start-demo",
+    "check-src": "tsc -p src --noEmit",
+    "check-demo": "tsc -p demo --noEmit",
+    "check": "npm run check-src && npm run check-demo",
+    "prepublish": "npm run check"
   },
   "author": {
     "name": "Sergio Morchón Poveda",
@@ -15,6 +19,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "typescript": "^2.9.2"
   }
 }

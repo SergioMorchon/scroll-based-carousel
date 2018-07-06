@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"checkJs": true,
+		"allowJs": true,
+		"strict": true
+	}
+}
