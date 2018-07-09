@@ -15,7 +15,7 @@
     "check-src": "tsc -p src --noEmit",
     "check-demo": "tsc -p demo --noEmit",
     "test": "npm run check-src && npm run check-demo",
-    "prepublish": "npm test"
+    "prepublishOnly": "npm test"
   },
   "author": {
     "name": "Sergio Morchón Poveda",
