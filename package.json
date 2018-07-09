@@ -1,8 +1,12 @@
 {
   "name": "scroll-based-carousel",
   "version": "1.0.0",
-  "description": "This is a plain simple carousel based on a plain simple scroll.",
+  "description": "Plain simple carousel based on a plain simple scroll.",
   "main": "src/index.js",
+  "keywords": [
+    "scroll",
+    "carousel"
+  ],
   "files": [
     "src/**/*.js"
   ],
@@ -10,8 +14,8 @@
     "start-demo": "node start-demo",
     "check-src": "tsc -p src --noEmit",
     "check-demo": "tsc -p demo --noEmit",
-    "check": "npm run check-src && npm run check-demo",
-    "prepublish": "npm run check"
+    "test": "npm run check-src && npm run check-demo",
+    "prepublish": "npm test"
   },
   "author": {
     "name": "Sergio Morchón Poveda",
