@@ -2,6 +2,9 @@
 
 A plain simple carousel based on a plain simple scroll.
 
+[![npm version](https://badge.fury.io/js/scroll-based-carousel.svg)](https://www.npmjs.com/package/scroll-based-carousel)
+[![Build Status](https://travis-ci.org/SergioMorchon/scroll-based-carousel.svg?branch=master)](https://travis-ci.org/SergioMorchon/scroll-based-carousel)
+
 ## Motivation
 
 Most carousel implementations are based on a static background actively animated within a `move` event (touch, mouse etc.). That implies a lot of computation to _move_ the slides, and could be visually laggy in low-end devices.
