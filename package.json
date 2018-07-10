@@ -2,18 +2,21 @@
   "name": "scroll-based-carousel",
   "version": "1.0.0",
   "description": "Plain simple carousel based on a plain simple scroll.",
-  "main": "src/index.js",
+  "main": "dist/carousel.js",
+  "types": "dist/carousel.d.ts",
   "keywords": [
     "scroll",
     "carousel"
   ],
   "files": [
-    "src/**/*.js"
+    "dist"
   ],
   "scripts": {
-    "check-src": "tsc -p src --noEmit",
-    "test": "npm run check-src",
-    "prepublishOnly": "npm test"
+    "compile": "tsc -p src -outDir dist",
+    "check-lint": "tslint -c tslint.json src/**/*.ts",
+    "check-prettier": "prettier --list-different src/**/*.ts",
+    "check": "npm run check-lint && npm run check-prettier",
+    "prepublishOnly": "npm run check && npm run compile"
   },
   "author": {
     "name": "Sergio Morchón Poveda",
@@ -21,6 +24,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "prettier": "^1.13.7",
+    "tslint": "^5.10.0",
     "typescript": "^2.9.2"
   }
 }
