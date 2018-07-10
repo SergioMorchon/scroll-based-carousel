@@ -11,10 +11,8 @@
     "src/**/*.js"
   ],
   "scripts": {
-    "start-demo": "node start-demo",
     "check-src": "tsc -p src --noEmit",
-    "check-demo": "tsc -p demo --noEmit",
-    "test": "npm run check-src && npm run check-demo",
+    "test": "npm run check-src",
     "prepublishOnly": "npm test"
   },
   "author": {
@@ -23,7 +21,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "express": "^4.16.3",
     "typescript": "^2.9.2"
   }
 }

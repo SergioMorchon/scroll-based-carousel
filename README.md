@@ -29,7 +29,7 @@ It's written in `es6`, so just import it and use it in your code and take full a
 - You will have tree shaking if your bundler supports it.
 - Use your transpiler and take advantage of your custom configuration applied over the source code.
 
-Or serve it to major browsers that already supports `es6`, including [`modules`](https://caniuse.com/#feat=es6-module). Like this [demo](./demo/index.html).
+Or serve it to major browsers that already supports `es6`, including [`modules`](https://caniuse.com/#feat=es6-module).
 
 ### Runtime requirements
 
@@ -38,4 +38,4 @@ Or serve it to major browsers that already supports `es6`, including [`modules`]
 
 ## Check it
 
-`npm i; npm start;` and open `http://localhost:3000/demo/`. You will need it to enable es6 module loading over the network.
+Open https://sergiomorchon.github.io/scroll-based-carousel
