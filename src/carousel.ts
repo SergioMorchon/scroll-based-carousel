@@ -87,9 +87,12 @@ interface ICarouselOptions {
 const create = ({onIndexChange, scroller, slider, transitionAnimation}: ICarouselOptions) => {
     let latestIndex: number;
     let currentGoToSlideTask: ICancellableTask;
-    const slideElements = Array.prototype.slice
-        .call(slider.childNodes)
-        .filter(({nodeType, ELEMENT_NODE}: HTMLElement) => nodeType === ELEMENT_NODE) as HTMLElement[];
+    const slideElements: HTMLElement[] = [];
+    for (const slide of slider.childNodes) {
+        if (slide.nodeType === slide.ELEMENT_NODE) {
+            slideElements.push(slide as HTMLElement);
+        }
+    }
 
     const handleScroll = (): void => {
         if (onIndexChange) {

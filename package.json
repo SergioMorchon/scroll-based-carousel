@@ -12,11 +12,11 @@
     "dist"
   ],
   "scripts": {
-    "compile": "tsc -p src -outDir dist",
+    "build": "tsc -p src -outDir dist",
     "check-lint": "tslint -c tslint.json src/**/*.ts",
     "check-prettier": "prettier --list-different src/**/*.ts",
     "check": "npm run check-lint && npm run check-prettier",
-    "prepublishOnly": "npm run check && npm run compile"
+    "prepublishOnly": "npm run check && npm run build"
   },
   "author": {
     "name": "Sergio Morchón Poveda",
