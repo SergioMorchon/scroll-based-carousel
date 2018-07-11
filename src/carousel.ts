@@ -12,10 +12,8 @@ const getClosestIndexForValue = (targetValue: number, values: number[]): number 
         {closestIndex: NaN, closestDelta: Infinity},
     ).closestIndex;
 
-const getWidth = (element: HTMLElement): number => parseInt(getComputedStyle(element).width || "0", 10);
-
 const getCenters = (elements: HTMLElement[]): number[] =>
-    elements.map((element) => element.offsetLeft + getWidth(element) / 2);
+    elements.map((element) => element.offsetLeft + element.offsetWidth / 2);
 
 /**
  * @param timeProgress Current time progress for the animation, between 0 and 1.
@@ -41,7 +39,7 @@ const goToSlide = (carousel: HTMLElement, slide: HTMLElement, animation?: IAnima
     };
 
     const startScrollLeft = carousel.scrollLeft;
-    const targetScrollLeft = Math.max(0, slide.offsetLeft - getWidth(slide) / 2);
+    const targetScrollLeft = Math.max(0, slide.offsetLeft - slide.offsetWidth / 2);
     const horizontalRange = targetScrollLeft - startScrollLeft;
     const complete = () => {
         carousel.scrollLeft = targetScrollLeft;
@@ -109,7 +107,7 @@ const create = ({onIndexChange, scroller, slider, transitionAnimation}: ICarouse
     scroller.addEventListener("scroll", handleScroll);
 
     const getIndex = (): number => {
-        const centerPoint = scroller.scrollLeft + getWidth(slider) / 2;
+        const centerPoint = scroller.scrollLeft + slider.offsetWidth / 2;
         const slidesCenters = getCenters(slideElements);
         return getClosestIndexForValue(centerPoint, slidesCenters);
     };
