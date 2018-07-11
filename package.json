@@ -4,6 +4,10 @@
   "description": "Plain simple carousel based on a plain simple scroll.",
   "main": "dist/carousel.js",
   "types": "dist/carousel.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SergioMorchon/scroll-based-carousel.git"
+  },
   "keywords": [
     "scroll",
     "carousel"
