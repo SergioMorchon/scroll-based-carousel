@@ -44,7 +44,7 @@ const goToSlide = (carousel: HTMLElement, slide: HTMLElement, animation?: IAnima
     let promiseResolve: () => void;
     const cancel = () => {
         cancelAnimationFrame(animationFrame);
-        setTimeout(promiseResolve());
+        promiseResolve();
     };
 
     const promise = new Promise<void>((resolve) => {
@@ -119,6 +119,10 @@ const create = ({
     let latestIndex: number;
     let currentGoToSlideTask: ICancellableTask | undefined;
     const slideElements: HTMLElement[] = [];
+    let managedScroll = false;
+    let timeoutId: number | undefined;
+    let userManipulating = false;
+
     for (const slide of slider.childNodes) {
         if (slide.nodeType === slide.ELEMENT_NODE) {
             slideElements.push(slide as HTMLElement);
@@ -139,11 +143,6 @@ const create = ({
         currentGoToSlideTask = goToSlide(scroller, slideElements[index], transitionAnimation);
         return currentGoToSlideTask.promise;
     };
-
-    let managedScroll = false;
-    let timeoutId: number | undefined;
-
-    let userManipulating = false;
 
     const cancelGoToSlideTask = () => {
         if (currentGoToSlideTask) {
@@ -213,7 +212,10 @@ const create = ({
             return getIndex();
         },
         set index(index: number) {
-            setIndex(index);
+            managedScroll = true;
+            setIndex(index).then(() => {
+                managedScroll = false;
+            });
         },
         destroy,
     };
