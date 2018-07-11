@@ -36,7 +36,6 @@ Or serve it to major browsers that already supports `es6`, including [`modules`]
 
 ### Runtime requirements
 
-- [`getComputedStyle`](https://caniuse.com/#feat=getcomputedstyle).
 - [`requestAnimationFrame`](https://caniuse.com/#feat=requestanimationframe).
 
 ## Check it

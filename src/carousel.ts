@@ -23,7 +23,7 @@ type ITimingFunction = (timeProgress: number) => number;
 
 interface IAnimation {
     readonly duration: number;
-    readonly timingFunction: ITimingFunction;
+    readonly timingFunction?: ITimingFunction;
 }
 
 interface ICancellableTask {
