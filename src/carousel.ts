@@ -120,7 +120,7 @@ const create = ({
     let currentGoToSlideTask: ICancellableTask | undefined;
     const slideElements: HTMLElement[] = [];
     let managedScroll = false;
-    let timeoutId: number | undefined;
+    let debouncedScrollActionTimeout: number | undefined;
     let userManipulating = false;
 
     for (const slide of slider.childNodes) {
@@ -150,19 +150,23 @@ const create = ({
         }
     };
 
+    const cancelDebouncedScrollAction = () => {
+        clearTimeout(debouncedScrollActionTimeout);
+    };
+
     const debounceScrollAction = () => {
         if (!autocenterDelay || userManipulating) {
             return;
         }
 
-        clearTimeout(timeoutId);
+        cancelDebouncedScrollAction();
         if (!managedScroll) {
             cancelGoToSlideTask();
-            timeoutId = setTimeout(() => {
+            debouncedScrollActionTimeout = setTimeout(() => {
                 managedScroll = true;
                 setIndex(getIndex()).then(() => {
                     managedScroll = false;
-                    timeoutId = undefined;
+                    debouncedScrollActionTimeout = undefined;
                 });
             }, autocenterDelay);
         }
@@ -201,6 +205,8 @@ const create = ({
     addEventListeners(scroller, userInteractionEndEvents, userInteractionEndEventHandler);
 
     const destroy = () => {
+        cancelGoToSlideTask();
+        cancelDebouncedScrollAction();
         removeEventListeners(scroller, scrollEvents, scrollHandler);
         removeEventListeners(scroller, userInteractionStartEvents, userInteractionStartEventHandler);
         removeEventListeners(scroller, userInteractionEndEvents, userInteractionEndEventHandler);
